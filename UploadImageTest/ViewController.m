@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "AFNetworking.h"
+
 
 @interface ViewController ()
 
@@ -16,7 +18,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+   
+    NSDictionary *dic =@{@"fdsfd":@"fdsfds"};
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes =[NSSet setWithObject:@"text/html"];
+    
+    NSString * url = @"http://139.162.12.209/financialLoan/upload.php";
+    UIImage * image = [UIImage imageNamed:@"fdsfds.png"];
+    
+    [manager POST:url parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:UIImagePNGRepresentation(image) name:@"fileToUpload" fileName:@"test.png"mimeType:@"image/png"];
+    }success:^(AFHTTPRequestOperation *operation,id responseObject) {
+        NSString * string = [NSString stringWithUTF8String:[operation.responseData bytes]];
+        NSLog(@"%@", string);
+    }failure:^(AFHTTPRequestOperation *operation,NSError *error) {
+        NSString * string = [NSString stringWithUTF8String:[operation.responseData bytes]];
+        NSLog(@"%@", string);
+    }];
+    
 }
 
 - (void)didReceiveMemoryWarning {
